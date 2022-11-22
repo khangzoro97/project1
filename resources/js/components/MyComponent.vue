@@ -1,6 +1,9 @@
 <template>
     <div class="my-component">
-        <div>{{ reverseMessage }}</div>
+        <div>Message type: {{ message.type }}</div>
+        <div>Message text: {{ message.text }}</div>
+        <div><button @click="changeType">Change type</button></div>
+        <div><button @click="changeText">Change text</button></div>
     </div>
 </template>
 
@@ -8,18 +11,40 @@
 export default {
     data() {
         return {
-            message: 'This is my first component using binding data'
+            message: {
+                type: 'greeting',
+                text: 'How are you?'
+            }
+        }
+    },
+    methods: {
+        changeType() {
+            this.message.type = 'this is new type'
+        },
+        changeText() {
+            this.message.text = 'this is new text'
         }
     },
     computed: {
-        reverseMessage() {
-            return this.message.split('').reverse().join('')
+        getType() {
+            return this.message.type
+        },
+        getText() {
+            return this.message.text
+        }
+    },
+    watch: {
+        getType() {
+            console.log('type changed')
+        },
+        getText() {
+            console.log('text changed')
         }
     }
 }
 </script>
 
-<style scoped>
+<style>
 .my-component {
     color: red;
 }
