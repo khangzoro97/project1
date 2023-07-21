@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,10 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::resource('products', ProductController::class);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Auth
+Route::prefix('auth')->group(function () {
+    Route::post('sign-up', [AuthController::class, 'signup'])->name('auth.signup');
+    Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
+        Route::get('user', [AuthController::class, 'getAuthenticatedUser'])->name('auth.user');
+    });
+
+
+    Route::post('password/email', [AuthController::class, 'sendPasswordResetLinkEmail'])
+        ->middleware('throttle:5,1')->name('password.email');
+    Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('password.reset');
 });
